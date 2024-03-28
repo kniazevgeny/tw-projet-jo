@@ -1,0 +1,38 @@
+#mascotte {
+    /* height: 30px; */
+    z-index: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
+#logo_jo {
+    text-align: right;
+}
+
+#header-buttons {
+    display: block;
+    text-align: center;
+}
+
+.phases:nth-child(1) {
+    border-color: #0081C8;
+}
+
+.phases:nth-child(2) {
+    border-color: black;
+}
+
+.phases:nth-child(3) {
+    border-color: #EE334E;
+}
+
+.phases:nth-child(5) {
+    border-color: #FCB131;
+}
+
+.phases:nth-child(6) {
+    border-color: #00A651;
+}
