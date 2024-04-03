@@ -20,6 +20,8 @@ const init = function () {
   BUTTONS = document.querySelectorAll("header button");
   BUTTONS[0].addEventListener("onclick", chargerSelections());
   // console.log(BUTTONS)
+  const stades = document.getElementById("stades");
+  stades.addEventListener("click", () => {});
 };
 
 /**
@@ -187,12 +189,31 @@ const rempliTableauMedailles = function (table, medailles) {
            ===Diaporama des stades=== 
 ************************************************************/
 
+var stadeIdx = 0;
+var stadeChangeInterval;
+
+const changeStade = () => {
+  const stades = document.getElementById("stades");
+  stades.querySelector("img#diapo").src = './images/stades/' + stadiumData[stadeIdx].src;
+  stades.querySelector("p:nth-of-type(1) > span").innerHTML =
+    stadiumData[stadeIdx].nom;
+  stades.querySelector("p:nth-of-type(2) > span").innerHTML =
+    stadiumData[stadeIdx].ville;
+  stades.querySelector("p:nth-of-type(3) > span").innerHTML =
+    stadiumData[stadeIdx].capacité;
+
+  // réinitialiser l'index pour eviter  IndexError
+  stadeIdx += 1;
+  if (stadeIdx >= stadiumData.length) stadeIdx = 0;
+};
+
 /**
  * lance le diaporama en utilisant la variable globale
  * monTimer
  */
 const afficherStades = function () {
   //TODO : mettre en place le diaporama
+  stadeChangeInterval = window.setInterval(changeStade, 1000);
 
   // passage à l'étape suivante
   prochaineEtape(2, afficherStades, qualifPremiers);
@@ -224,8 +245,11 @@ const deuxPremiers = function () {
   //TODO
   let choix = [1, 2, 3, 4];
   const premier = choix[Math.round(Math.random() * 3)];
-  delete choix[choix.findIndex(el => el == premier)];
-  const res = [premier, choix.filter(el => !!el)[Math.round(Math.random() * 2)]];
+  delete choix[choix.findIndex((el) => el == premier)];
+  const res = [
+    premier,
+    choix.filter((el) => !!el)[Math.round(Math.random() * 2)],
+  ];
   return res;
 };
 
