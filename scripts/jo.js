@@ -78,8 +78,8 @@ const rempliTd = function (td, data) {
   //TODO
   td.id = data.code;
   td.classList.add(data.poule);
-  td.innerHTML = data.nom;
-  td.addEventListener("onclick", afficheInfoPays.call(td));
+  td.textContent = data.nom;
+  td.addEventListener("mouseover", () => afficheInfoPays.call(td));
   // console.log(td)
 };
 
@@ -109,7 +109,7 @@ const chargerSelections = function () {
  */
 const afficheInfoPays = function () {
   const infoPays = document.getElementById("infoPays");
-  infoPays.innerHTML = "";
+  infoPays.textContent = "";
   const code = this.id;
   /* la ligne de code suivante permet de retrouver l'objet pays dans le tableau
     à partir de son code, si vous voulez en savoir plus sur les arrow function
@@ -126,18 +126,20 @@ const afficheInfoPays = function () {
   infoPays.appendChild(h1);
 
   // TODO : ajouter le logo de l'équipe
-  console.log(infoPays);
-
+  const logoEquipe = document.createElement('img')
+  logoEquipe.src = './images/equipes/' + pays.logo;
+  infoPays.appendChild(logoEquipe)
+  
   // TODO : ajouter la liste d'informations
-  infoPays.querySelector("h1").innerHTML = nom;
-
+  infoPays.querySelector("h1").textContent = nom;
+  
   // Tableau de médailles ajouté
   const medailles = pays.medailles;
   const table = document.createElement("table");
   infoPays.appendChild(table);
   table.innerHTML = creeTableauMedailles();
   rempliTableauMedailles(table, medailles);
-
+  
   // TODO : ajout de la mention pays organisateur
 };
 
@@ -172,11 +174,10 @@ const creeTableauMedailles = function () {
 const rempliTableauMedailles = function (table, medailles) {
   //TODO remplir les cases correspondants aux nombres de médailles
   // console.log(table)
-  // console.log(medailles)
   const medailles_container = table.querySelector("tr:has(td)").childNodes;
-  medailles_container[1] = medailles[0];
-  medailles_container[3] = medailles[1];
-  medailles_container[5] = medailles[2];
+  medailles_container[1].textContent = medailles[0];
+  medailles_container[3].textContent = medailles[1];
+  medailles_container[5].textContent = medailles[2];
 
   // TODO remplir la case donnant la somme des médailles obtenues
   medailles_container[7] = medailles.reduce(
@@ -190,19 +191,20 @@ const rempliTableauMedailles = function (table, medailles) {
 ************************************************************/
 
 var stadeIdx = 0;
-var stadeChangeInterval;
+var monTimer;
 
 const changeStade = () => {
   const stades = document.getElementById("stades");
-  stades.querySelector("img#diapo").src = './images/stades/' + stadiumData[stadeIdx].src;
-  stades.querySelector("p:nth-of-type(1) > span").innerHTML =
+  stades.querySelector("img#diapo").src =
+    "./images/stades/" + stadiumData[stadeIdx].src;
+  stades.querySelector("p:nth-of-type(1) > span").textContent =
     stadiumData[stadeIdx].nom;
-  stades.querySelector("p:nth-of-type(2) > span").innerHTML =
+  stades.querySelector("p:nth-of-type(2) > span").textContent =
     stadiumData[stadeIdx].ville;
-  stades.querySelector("p:nth-of-type(3) > span").innerHTML =
+  stades.querySelector("p:nth-of-type(3) > span").textContent =
     stadiumData[stadeIdx].capacité;
 
-  // réinitialiser l'index pour eviter  IndexError
+  // réinitialiser l'index pour eviter IndexError
   stadeIdx += 1;
   if (stadeIdx >= stadiumData.length) stadeIdx = 0;
 };
@@ -213,7 +215,7 @@ const changeStade = () => {
  */
 const afficherStades = function () {
   //TODO : mettre en place le diaporama
-  stadeChangeInterval = window.setInterval(changeStade, 1000);
+  monTimer = window.setInterval(changeStade, 1000);
 
   // passage à l'étape suivante
   prochaineEtape(2, afficherStades, qualifPremiers);
@@ -265,6 +267,13 @@ const miseAJourDeuxPremiers = function (tab) {
 };
 
 /**
+ * renvoie un entier aleatoire entre 1 et 4
+ */
+function alea1_4() {
+  return Math.round(Math.random() * 3) + 1;
+}
+
+/**
  * Choix et mise à jour des meilleurs troisièmes prévus
  * par Nelly
  */
@@ -273,6 +282,7 @@ const meilleursTrois = function () {
   const groupes = ["A", "B", "C"];
   let ig, g, equipes, ie;
   for (let i = 0; i < 2; i++) {
+    // TODO: add comments here
     ig = Math.floor(Math.random() * groupes.length);
     g = groupes[ig];
     groupes.splice(ig, 1);
@@ -295,19 +305,20 @@ const meilleursTrois = function () {
  */
 const qualifie = function (groupe, indice, pos) {
   const table = document.getElementById(groupe);
+  // trouver dans tbody tr avec (с порядковым номером индекса) et dedans td
   const td = table.querySelector("tbody tr:nth-child(" + indice + ") td");
   switch (pos) {
     case 1:
       td.style.backgroundColor = "#e1a624";
-      td.classList.add("q1");
+      td.classList.add("q1"); // ajoute la valeur q1 à la suite des autre valeurs de l'attribut class de l'élément td
       break;
     case 2:
       td.style.backgroundColor = "#317ac1";
-      td.classList.add("q2");
+      td.classList.add("q2"); // ajoute la valeur q2 à la suite des autre valeurs de l'attribut class de l'élément td
       break;
     case 3:
       td.style.backgroundColor = "LemonChiffon";
-      td.classList.add("q3");
+      td.classList.add("q3"); // ajoute la valeur q3 à la suite des autre valeurs de l'attribut class de l'élément td
       break;
     default:
       break;
@@ -323,8 +334,23 @@ const qualifie = function (groupe, indice, pos) {
  * un compteur local est incrémenté, une assertion vérifie le nombre de quarts de finalistes
  */
 const listeQualifies = function () {
-  let compteur = 0; //TODO incrémenter le compteur pour chaque équipe qualifiée
-  //TODO
+  let compteur = 0; // TODO: incrémenter le compteur pour chaque équipe qualifiée
+  const qualifies = document.getElementById("qualifies");
+  // composer une liste des éléments de qualifiés 
+  const liste = Array.from(document.querySelectorAll(".q1, .q2, .q3"))
+    .reduce((prev, current) => {
+      compteur += 1;
+      return [...prev, current.textContent];
+    }, [])
+    .sort()
+    .join(", ");
+
+  // Affiche la liste des qualifiés
+  const qualifiesNode = document.createElement("span");
+  qualifiesNode.textContent = liste;
+  qualifies.insertBefore(qualifiesNode, qualifies.childNodes[4]);
+  qualifies.childNodes[4].textContent = liste;
+  qualifies.style.visibility = "visible";
 
   // assertion (comme en Python), ici pour vérifier qu'il y a bien 8 qualifiées
   console.assert(compteur == 8, "Il doit y avoir 8 équipes");
